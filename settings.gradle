@@ -1,0 +1,3 @@
+include ':SampleLibrary'
+include ':app'
+rootProject.name = "OmakLibs"
