@@ -31,9 +31,11 @@ public class NotificationHandler {
     int nextNotificationId;
     notiData notiData;
     private NotificationChannelHelpers mNotificationUtils;
+    Class mainClass;
 
-    public NotificationHandler(Context context) {
+    public NotificationHandler(Context context, Class clazz) {
         this.context = context;
+        this.mainClass = clazz;
     }
 
     public NotificationHandler(Context context, notiData notiData) {
@@ -105,7 +107,7 @@ public class NotificationHandler {
                 break;
         }
 
-        intent = new Intent(context, HelpersTest.clazz);
+        intent = new Intent(context, mainClass);
         intent.putExtra("goto", notiData.getGoTo());
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         notificationCompat.setContentIntent(pendingIntent).addAction(R.drawable.logo, "" + notiData.getBtn_title(), pendingIntent);
