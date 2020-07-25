@@ -1,8 +1,8 @@
-package com.omak.omaklibs;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.omak.omakhelpers;
 
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 

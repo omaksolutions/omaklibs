@@ -1,4 +1,4 @@
-package com.omak.omaklibs;
+package com.omak.omakhelpers;
 
 import android.content.Context;
 import android.widget.Toast;
