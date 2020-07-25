@@ -35,11 +35,6 @@ public class RealmHelpers {
 
     /*Realm Configuration */
     public static Realm getRealm(String whichRealm, Context context) {
-
-        @RealmModule(library = true, allClasses = true)
-        class OmakHelpersModule {
-        }
-
         Realm.init(context);
 
         RealmConfiguration config = new RealmConfiguration.Builder()
