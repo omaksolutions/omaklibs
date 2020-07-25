@@ -28,12 +28,9 @@ public class RealmHelpers {
         realm = getRealm(libraryRealm, context);
     }
 
-    public RealmHelpers(Context context, String realmName) {
+    public RealmHelpers(Context context, Realm anotherRealm) {
         this.context = context;
-        realm = getRealm(realmName, context);
-    }
-
-    public void setAnotherRealm(Realm anotherRealm) {
+        realm = getRealm(libraryRealm, context);
         this.anotherRealm = anotherRealm;
     }
 
