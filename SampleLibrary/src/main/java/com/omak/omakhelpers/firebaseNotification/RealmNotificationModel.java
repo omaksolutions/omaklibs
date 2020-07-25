@@ -17,6 +17,7 @@ public class RealmNotificationModel extends RealmObject {
     @SerializedName("id")
     @Expose
     private int id;
+
     @SerializedName("ongoing")
     @Expose
     private Boolean ongoing;
