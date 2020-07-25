@@ -46,7 +46,7 @@ public class RealmHelpers {
                 .name(libraryRealm)
                 .deleteRealmIfMigrationNeeded()
                 .modules(new OmakHelpersModule())
-                .schemaVersion(1)
+                //.schemaVersion(1)
                 .build();
 
         // Realm.setDefaultConfiguration(config);
