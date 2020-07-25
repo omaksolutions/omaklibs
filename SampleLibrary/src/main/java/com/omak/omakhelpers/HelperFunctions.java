@@ -204,7 +204,7 @@ public class HelperFunctions {
         return phrase.toString();
     }
 
-    public static <T extends RealmObject> void printTask(String tag, Class<T> task) {
+    public static <T extends Object> void printTask(String tag, T task) {
         theLogger("Task", tag + ": " + new Gson().toJson(task));
     }
 
