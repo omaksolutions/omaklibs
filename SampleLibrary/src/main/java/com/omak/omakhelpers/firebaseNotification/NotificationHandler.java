@@ -22,6 +22,7 @@ import com.omak.samplelibrary.R;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.EventListener;
 
 public class NotificationHandler {
     public static Bitmap largeImage, bigImage, smallIconImage;
@@ -32,10 +33,21 @@ public class NotificationHandler {
     notiData notiData;
     private NotificationChannelHelpers mNotificationUtils;
     Class mainClass;
+    EventListener listener;
+
+    public interface EventListener {
+        void onNotificationReceived(notiData notiData);
+    }
 
     public NotificationHandler(Context context, Class clazz) {
         this.context = context;
         this.mainClass = clazz;
+    }
+
+    public NotificationHandler(Context context, Class clazz, EventListener listener) {
+        this.context = context;
+        this.mainClass = clazz;
+        this.listener = listener;
     }
 
     public NotificationHandler(Context context, notiData notiData) {
@@ -99,6 +111,8 @@ public class NotificationHandler {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             notificationCompat.setColor(context.getResources().getColor(R.color.colorWhite));
         }
+
+        listener.onNotificationReceived(notiData);
 
         switch (notiData.getType()) {
             case "logout":
