@@ -13,7 +13,6 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
-import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.omak.omakhelpers.HelperFunctions;
@@ -24,7 +23,7 @@ import com.omak.samplelibrary.R;
 import java.io.IOException;
 import java.net.URL;
 
-public class NotificationHandler extends FirebaseMessagingService {
+public class NotificationHandler {
     public static Bitmap largeImage, bigImage, smallIconImage;
     NotificationManager notificationManager;
     Context context;
@@ -33,8 +32,8 @@ public class NotificationHandler extends FirebaseMessagingService {
     notiData notiData;
     private NotificationChannelHelpers mNotificationUtils;
 
-    public NotificationHandler() {
-        this.context = this;
+    public NotificationHandler(Context context) {
+        this.context = context;
     }
 
     public NotificationHandler(Context context, notiData notiData) {
@@ -48,8 +47,6 @@ public class NotificationHandler extends FirebaseMessagingService {
      *
      * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
-    // [START receive_message]
-    @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         HelperFunctions.theLogger("Check Notification", "" + new Gson().toJson(remoteMessage));
 
@@ -67,7 +64,7 @@ public class NotificationHandler extends FirebaseMessagingService {
     }
 
     private void showGeneralNotification() {
-        realmHelpers = new RealmHelpers(this);
+        realmHelpers = new RealmHelpers(context);
         nextNotificationId = realmHelpers.getNotificationId(notiData);
         Intent intent = new Intent();
         String channelId = NotificationChannelHelpers.CHANNEL_ID_GENERAL;
@@ -86,7 +83,7 @@ public class NotificationHandler extends FirebaseMessagingService {
         }
 
         NotificationCompat.Builder notificationCompat =
-                new NotificationCompat.Builder(this, channelId)
+                new NotificationCompat.Builder(context, channelId)
                         .setLargeIcon(largeImage)
                         .setSmallIcon(R.drawable.logo)
                         .setContentText(notiData.getMessage())
@@ -98,7 +95,7 @@ public class NotificationHandler extends FirebaseMessagingService {
                         .setAutoCancel(true);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            notificationCompat.setColor(getResources().getColor(R.color.colorWhite));
+            notificationCompat.setColor(context.getResources().getColor(R.color.colorWhite));
         }
 
         switch (notiData.getType()) {
@@ -108,19 +105,19 @@ public class NotificationHandler extends FirebaseMessagingService {
                 break;
         }
 
-        intent = new Intent(getApplicationContext(), HelpersTest.clazz);
+        intent = new Intent(context, HelpersTest.clazz);
         intent.putExtra("goto", notiData.getGoTo());
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         notificationCompat.setContentIntent(pendingIntent).addAction(R.drawable.logo, "" + notiData.getBtn_title(), pendingIntent);
 
         // Since android Oreo notification channel is needed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // ToDo: Find out if channels are created by default or after first notification
-            mNotificationUtils = new NotificationChannelHelpers(getApplicationContext(), true);
+            mNotificationUtils = new NotificationChannelHelpers(context, true);
             notificationCompat.setChannelId(notiData.getChannelId());
             mNotificationUtils.getManager().notify(nextNotificationId, notificationCompat.build());
         } else {
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(nextNotificationId, notificationCompat.build());
         }
     }
