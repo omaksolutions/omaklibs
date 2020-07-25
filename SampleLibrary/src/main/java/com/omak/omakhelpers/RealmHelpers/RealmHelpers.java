@@ -13,7 +13,6 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
-import io.realm.annotations.RealmModule;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 
 public class RealmHelpers {
@@ -22,6 +21,7 @@ public class RealmHelpers {
     public Integer nextNotificationId;
     Context context;
     Realm realm;
+    Realm anotherRealm;
 
     public RealmHelpers(Context context) {
         this.context = context;
@@ -31,6 +31,10 @@ public class RealmHelpers {
     public RealmHelpers(Context context, String realmName) {
         this.context = context;
         realm = getRealm(realmName, context);
+    }
+
+    public void setAnotherRealm(Realm anotherRealm) {
+        this.anotherRealm = anotherRealm;
     }
 
     /*Realm Configuration */
@@ -107,7 +111,7 @@ public class RealmHelpers {
     }
 
     public <T extends RealmObject> RealmResults<T> getUniqueFieldValuesFromRealm(String field, Class<T> clazz) {
-        RealmQuery uniqueFieldQuery = realm.where(clazz).distinct(field);
+        RealmQuery uniqueFieldQuery = anotherRealm.where(clazz).distinct(field);
         uniqueFieldQuery.notEqualTo(field, "");
         RealmResults<T> uniqueValueProjects = uniqueFieldQuery.findAll();
         return uniqueValueProjects;
@@ -115,28 +119,28 @@ public class RealmHelpers {
 
 
     public <T extends RealmObject> RealmResults<T> getFromRealm(String field, String value, Class<T> clazz) {
-        return realm.where(clazz).equalTo(field, value).findAll();
+        return anotherRealm.where(clazz).equalTo(field, value).findAll();
     }
 
     public <T extends RealmObject> RealmResults<T> getFromRealm(String field, Integer value, Class<T> clazz) {
-        return realm.where(clazz).equalTo(field, value).findAll();
+        return anotherRealm.where(clazz).equalTo(field, value).findAll();
     }
 
     public <T extends RealmObject> RealmResults<T> getFromRealm(Class<T> clazz) {
-        return realm.where(clazz).findAll();
+        return anotherRealm.where(clazz).findAll();
     }
 
     public <T extends RealmObject> T getSingleFromRealm(String field, String value, Class<T> clazz) {
-        return realm.where(clazz).equalTo(field, value).findFirst();
+        return anotherRealm.where(clazz).equalTo(field, value).findFirst();
     }
 
     public <T extends RealmObject> T getSingleFromRealm(String field, Integer value, Class<T> clazz) {
-        return realm.where(clazz).equalTo(field, value).findFirst();
+        return anotherRealm.where(clazz).equalTo(field, value).findFirst();
     }
 
     public <T extends RealmObject> void deleteFromRealm(String field, Integer value, Class<T> clazz) {
-        final RealmResults<T> foundRows = realm.where(clazz).equalTo(field, value).findAll();
-        realm.executeTransaction(new Realm.Transaction() {
+        final RealmResults<T> foundRows = anotherRealm.where(clazz).equalTo(field, value).findAll();
+        anotherRealm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 try {
@@ -149,7 +153,7 @@ public class RealmHelpers {
     }
 
     public <T extends RealmObject> void deleteFromRealm(String field, String value, Class<T> clazz) {
-        final RealmResults<T> foundRows = realm.where(clazz).equalTo(field, value).findAll();
+        final RealmResults<T> foundRows = anotherRealm.where(clazz).equalTo(field, value).findAll();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
