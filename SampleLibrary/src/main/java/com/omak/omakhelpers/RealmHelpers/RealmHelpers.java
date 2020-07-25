@@ -13,17 +13,19 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.annotations.RealmModule;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 
 public class RealmHelpers {
 
+    public static String libraryRealm = "omakhelpersdb.realm";
     public Integer nextNotificationId;
     Context context;
     Realm realm;
 
     public RealmHelpers(Context context) {
         this.context = context;
-        realm = getRealm("messages", context);
+        realm = getRealm(libraryRealm, context);
     }
 
     public RealmHelpers(Context context, String realmName) {
@@ -32,22 +34,23 @@ public class RealmHelpers {
     }
 
     /*Realm Configuration */
-    public static Realm getRealm(String whichRealm, Context applicationContext) {
-        Realm.init(applicationContext);
+    public static Realm getRealm(String whichRealm, Context context) {
 
-        switch (whichRealm) {
-            case "messages":
-                RealmConfiguration config = new RealmConfiguration.Builder()
-                        .name("messages.realm")
-                        .deleteRealmIfMigrationNeeded()
-                        //.schemaVersion(1)
-                        //.migration(new MyRealMigration())
-                        .build();
-
-                Realm.setDefaultConfiguration(config);
-                break;
+        @RealmModule(library = true, allClasses = true)
+        class OmakHelpersModule {
         }
-        return Realm.getDefaultInstance();
+
+        Realm.init(context);
+
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .name(libraryRealm)
+                .deleteRealmIfMigrationNeeded()
+                .modules(new OmakHelpersModule())
+                .schemaVersion(1)
+                .build();
+
+        // Realm.setDefaultConfiguration(config);
+        return Realm.getInstance(config);
     }
 
     public boolean getBooleanFlag(String flagName) {
