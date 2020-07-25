@@ -8,7 +8,7 @@ import com.omak.samplelibrary.R;
 /**
  * App_Theme_Utils class used in MDC-111 application.
  */
-public abstract class DialogHelpers {
+public class DialogHelpers {
 
     private Integer positiveButtonBackground = R.color.colorPrimary;
     private Integer positiveButtonColor = R.color.colorAccent;
