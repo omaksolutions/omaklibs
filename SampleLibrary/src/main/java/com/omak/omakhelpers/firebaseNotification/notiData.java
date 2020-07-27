@@ -3,7 +3,9 @@ package com.omak.omakhelpers.firebaseNotification;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 
-public class notiData {
+import java.io.Serializable;
+
+public class notiData implements Serializable {
 
     String data;
     String type;

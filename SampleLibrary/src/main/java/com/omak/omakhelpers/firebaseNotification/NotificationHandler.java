@@ -1,5 +1,6 @@
 package com.omak.omakhelpers.firebaseNotification;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -34,14 +35,19 @@ public class NotificationHandler {
     private NotificationChannelHelpers mNotificationUtils;
     Class mainClass;
     EventListener listener;
+    Integer notificationPriority = NotificationCompat.PRIORITY_DEFAULT;
 
     public interface EventListener {
-        void onNotificationReceived(notiData notiData);
+        notiData onNotificationReceived(notiData notiData);
     }
 
     public NotificationHandler(Context context, Class clazz) {
         this.context = context;
         this.mainClass = clazz;
+    }
+
+    public void setPriority(Integer priority) {
+        notificationPriority = priority;
     }
 
     public NotificationHandler(Context context, Class clazz, EventListener listener) {
@@ -84,6 +90,9 @@ public class NotificationHandler {
         String channelId = NotificationChannelHelpers.CHANNEL_ID_GENERAL;
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
+        // Listener to interact with notiData or do operations on it
+        notiData = listener.onNotificationReceived(notiData);
+
         try {
             URL largeImage = new URL(notiData.getLongImageUrl());
             URL bigImages = new URL(notiData.getSmallImageUrl());
@@ -103,6 +112,7 @@ public class NotificationHandler {
                         .setContentText(notiData.getMessage())
                         .setColor(Color.GREEN)
                         .setContentTitle(notiData.getTitle())
+                        .setOngoing(notiData.getOngoing())
                         .setSound(defaultSoundUri)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(notiData.getMessage()))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -112,7 +122,6 @@ public class NotificationHandler {
             notificationCompat.setColor(context.getResources().getColor(R.color.colorWhite));
         }
 
-        listener.onNotificationReceived(notiData);
 
         switch (notiData.getType()) {
             case "logout":
@@ -123,6 +132,8 @@ public class NotificationHandler {
 
         intent = new Intent(context, mainClass);
         intent.putExtra("goto", notiData.getGoTo());
+        intent.putExtra("type", notiData.getType());
+        intent.putExtra("notiData", notiData);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         notificationCompat.setContentIntent(pendingIntent).addAction(R.drawable.logo, "" + notiData.getBtn_title(), pendingIntent);
 
