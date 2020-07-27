@@ -20,7 +20,7 @@ public class notiData implements Serializable {
     String channelId;
 
     public notiData(RemoteMessage remoteMessage) {
-        remoteMessage = remoteMessage;
+        this.remoteMessage = remoteMessage;
         type = getDataKey(remoteMessage, "type");
         title = getDataKey(remoteMessage, "title");
         message = getDataKey(remoteMessage, "message");
