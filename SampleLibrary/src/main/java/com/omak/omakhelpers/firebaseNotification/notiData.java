@@ -1,19 +1,16 @@
 package com.omak.omakhelpers.firebaseNotification;
 
 import com.google.firebase.messaging.RemoteMessage;
-import com.google.gson.Gson;
 
 import java.io.Serializable;
 
 public class notiData implements Serializable {
 
-    String data;
+    RemoteMessage remoteMessage;
     String type;
     String title;
     String message;
-
     String btn_title = "View Now";
-
     String longImageUrl;
     String smallImageUrl;
     String smallIconUrl;
@@ -23,7 +20,7 @@ public class notiData implements Serializable {
     String channelId;
 
     public notiData(RemoteMessage remoteMessage) {
-        data = remoteMessage.getData().toString();
+        remoteMessage = remoteMessage;
         type = getDataKey(remoteMessage, "type");
         title = getDataKey(remoteMessage, "title");
         message = getDataKey(remoteMessage, "message");
@@ -38,6 +35,14 @@ public class notiData implements Serializable {
         if (channelId.isEmpty()) channelId = "channel_id_general";
     }
 
+    public RemoteMessage getRemoteMessage() {
+        return remoteMessage;
+    }
+
+    public void setRemoteMessage(RemoteMessage remoteMessage) {
+        this.remoteMessage = remoteMessage;
+    }
+
     public Boolean getOngoing() {
         return ongoing;
     }
@@ -48,14 +53,6 @@ public class notiData implements Serializable {
 
     private String getDataKey(RemoteMessage remoteMessage, String key) {
         return (remoteMessage.getData().get(key) != null) ? remoteMessage.getData().get(key) : "";
-    }
-
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
     }
 
     public String getType() {
