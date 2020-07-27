@@ -23,7 +23,7 @@ public class notiData implements Serializable {
     String channelId;
 
     public notiData(RemoteMessage remoteMessage) {
-        data = new Gson().toJson(remoteMessage.getData());
+        data = remoteMessage.getData().toString();
         type = getDataKey(remoteMessage, "type");
         title = getDataKey(remoteMessage, "title");
         message = getDataKey(remoteMessage, "message");
