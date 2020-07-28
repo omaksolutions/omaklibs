@@ -1,6 +1,5 @@
 package com.omak.omakhelpers.firebaseNotification;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -17,13 +16,11 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.omak.omakhelpers.HelperFunctions;
-import com.omak.omakhelpers.HelpersTest;
 import com.omak.omakhelpers.RealmHelpers.RealmHelpers;
 import com.omak.samplelibrary.R;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.EventListener;
 
 public class NotificationHandler {
     public static Bitmap largeImage, bigImage, smallIconImage;
@@ -32,22 +29,14 @@ public class NotificationHandler {
     RealmHelpers realmHelpers;
     int nextNotificationId;
     notiData notiData;
-    private NotificationChannelHelpers mNotificationUtils;
     Class mainClass;
     EventListener listener;
     Integer notificationPriority = NotificationCompat.PRIORITY_DEFAULT;
-
-    public interface EventListener {
-        notiData onNotificationReceived(notiData notiData);
-    }
+    private NotificationChannelHelpers mNotificationUtils;
 
     public NotificationHandler(Context context, Class clazz) {
         this.context = context;
         this.mainClass = clazz;
-    }
-
-    public void setPriority(Integer priority) {
-        notificationPriority = priority;
     }
 
     public NotificationHandler(Context context, Class clazz, EventListener listener) {
@@ -60,6 +49,10 @@ public class NotificationHandler {
         this.notiData = notiData;
         this.context = context;
         showGeneralNotification();
+    }
+
+    public void setPriority(Integer priority) {
+        notificationPriority = priority;
     }
 
     /**
@@ -147,5 +140,9 @@ public class NotificationHandler {
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(nextNotificationId, notificationCompat.build());
         }
+    }
+
+    public interface EventListener {
+        notiData onNotificationReceived(notiData notiData);
     }
 }

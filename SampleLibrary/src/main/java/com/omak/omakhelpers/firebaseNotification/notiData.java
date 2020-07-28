@@ -3,10 +3,12 @@ package com.omak.omakhelpers.firebaseNotification;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class notiData implements Serializable {
 
-    RemoteMessage remoteMessage;
+    Map<String, String> data;
     String type;
     String title;
     String message;
@@ -18,9 +20,8 @@ public class notiData implements Serializable {
     Boolean showNotification;
     String goTo;
     String channelId;
-
     public notiData(RemoteMessage remoteMessage) {
-        this.remoteMessage = remoteMessage;
+        this.data = remoteMessage.getData();
         type = getDataKey(remoteMessage, "type");
         title = getDataKey(remoteMessage, "title");
         message = getDataKey(remoteMessage, "message");
@@ -35,12 +36,12 @@ public class notiData implements Serializable {
         if (channelId.isEmpty()) channelId = "channel_id_general";
     }
 
-    public RemoteMessage getRemoteMessage() {
-        return remoteMessage;
+    public Map<String, String> getData() {
+        return data;
     }
 
-    public void setRemoteMessage(RemoteMessage remoteMessage) {
-        this.remoteMessage = remoteMessage;
+    public void setData(Map<String, String> data) {
+        this.data = data;
     }
 
     public Boolean getOngoing() {
