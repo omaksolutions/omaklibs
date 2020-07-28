@@ -85,7 +85,7 @@ public class RealmNotificationModel extends RealmObject {
                 realmNotificationModel.setTitle(notiData.getTitle());
                 realmNotificationModel.setMessage(notiData.getMessage());
                 realmNotificationModel.setType(notiData.getType());
-                realmNotificationModel.setData(notiData.getData().toString());
+                realmNotificationModel.setData(notiData.getRemoteMessage().getData().toString());
                 realm.insertOrUpdate(realmNotificationModel); // using insert API
             }
         });

@@ -1,14 +1,13 @@
 package com.omak.omakhelpers.firebaseNotification;
 
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 public class notiData implements Serializable {
 
-    Map<String, String> data;
+    RemoteMessage remoteMessage;
     String type;
     String title;
     String message;
@@ -21,7 +20,7 @@ public class notiData implements Serializable {
     String goTo;
     String channelId;
     public notiData(RemoteMessage remoteMessage) {
-        this.data = remoteMessage.getData();
+        this.remoteMessage = remoteMessage;
         type = getDataKey(remoteMessage, "type");
         title = getDataKey(remoteMessage, "title");
         message = getDataKey(remoteMessage, "message");
@@ -36,12 +35,16 @@ public class notiData implements Serializable {
         if (channelId.isEmpty()) channelId = "channel_id_general";
     }
 
-    public Map<String, String> getData() {
-        return data;
+    public static notiData getFromIntent(String jsonString) {
+        return new Gson().fromJson(jsonString, notiData.class);
     }
 
-    public void setData(Map<String, String> data) {
-        this.data = data;
+    public RemoteMessage getRemoteMessage() {
+        return remoteMessage;
+    }
+
+    public void setRemoteMessage(RemoteMessage remoteMessage) {
+        this.remoteMessage = remoteMessage;
     }
 
     public Boolean getOngoing() {
@@ -52,7 +55,11 @@ public class notiData implements Serializable {
         this.ongoing = ongoing;
     }
 
-    private String getDataKey(RemoteMessage remoteMessage, String key) {
+    public String getDataKey(RemoteMessage remoteMessage, String key) {
+        return (remoteMessage.getData().get(key) != null) ? remoteMessage.getData().get(key) : "";
+    }
+
+    public String getDataKey(String key) {
         return (remoteMessage.getData().get(key) != null) ? remoteMessage.getData().get(key) : "";
     }
 
@@ -135,5 +142,6 @@ public class notiData implements Serializable {
     public void setChannelId(String channelId) {
         this.channelId = channelId;
     }
+
 
 }

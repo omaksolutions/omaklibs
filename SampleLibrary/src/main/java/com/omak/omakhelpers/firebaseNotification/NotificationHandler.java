@@ -28,7 +28,7 @@ public class NotificationHandler {
     Context context;
     RealmHelpers realmHelpers;
     int nextNotificationId;
-    notiData notiData;
+    com.omak.omakhelpers.firebaseNotification.notiData notiData;
     Class mainClass;
     EventListener listener;
     Integer notificationPriority = NotificationCompat.PRIORITY_DEFAULT;
@@ -45,7 +45,7 @@ public class NotificationHandler {
         this.listener = listener;
     }
 
-    public NotificationHandler(Context context, notiData notiData) {
+    public NotificationHandler(Context context, com.omak.omakhelpers.firebaseNotification.notiData notiData) {
         this.notiData = notiData;
         this.context = context;
         showGeneralNotification();
@@ -111,7 +111,7 @@ public class NotificationHandler {
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setAutoCancel(true);
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             notificationCompat.setColor(context.getResources().getColor(R.color.colorWhite));
         }
 
@@ -126,7 +126,7 @@ public class NotificationHandler {
         intent = new Intent(context, mainClass);
         intent.putExtra("goto", notiData.getGoTo());
         intent.putExtra("type", notiData.getType());
-        intent.putExtra("notiData", notiData);
+        intent.putExtra("notiData", new Gson().toJson(notiData));
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         notificationCompat.setContentIntent(pendingIntent).addAction(R.drawable.logo, "" + notiData.getBtn_title(), pendingIntent);
 
@@ -143,6 +143,6 @@ public class NotificationHandler {
     }
 
     public interface EventListener {
-        notiData onNotificationReceived(notiData notiData);
+        com.omak.omakhelpers.firebaseNotification.notiData onNotificationReceived(com.omak.omakhelpers.firebaseNotification.notiData notiData);
     }
 }
