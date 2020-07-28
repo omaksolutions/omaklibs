@@ -121,6 +121,25 @@ public class RealmHelpers {
         return (currentIdNum == null) ? 1 : currentIdNum.intValue();
     }
 
+
+    public <T extends RealmObject> T getSingleRowContains(String field, String value, Class<T> clazz) {
+        RealmQuery query = anotherRealm.where(clazz);
+        query.contains(field, value);
+        RealmResults<T> foundRows = query.findAll();
+        if (foundRows.size() > 0) {
+            return foundRows.get(0);
+        }
+
+        return null;
+    }
+
+    public <T extends RealmObject> RealmResults<T> getOption(Class<T> clazz, String type, String value) {
+        RealmQuery uniqueFieldQuery = anotherRealm.where(clazz);
+        uniqueFieldQuery.equalTo(type, value).findAll();
+        RealmResults<T> uniqueValueProjects = uniqueFieldQuery.findAll();
+        return uniqueValueProjects;
+    }
+
     /*
     param String field
     param Class<T> tClass
@@ -204,6 +223,25 @@ public class RealmHelpers {
      */
     public <T extends RealmObject> void deleteFromRealm(String field, String value, Class<T> tClass) {
         final RealmResults<T> foundRows = anotherRealm.where(tClass).equalTo(field, value).findAll();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                try {
+                    foundRows.deleteAllFromRealm();
+                } catch (RealmPrimaryKeyConstraintException e) {
+                    HelperFunctions.toaster(context, "Local DB Failure!");
+                }
+            }
+        });
+    }
+
+    /**
+     *
+     * @param tClass
+     * @param <T>
+     */
+    public <T extends RealmObject> void deleteFromRealm(Class<T> tClass) {
+        final RealmResults<T> foundRows = anotherRealm.where(tClass).findAll();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
