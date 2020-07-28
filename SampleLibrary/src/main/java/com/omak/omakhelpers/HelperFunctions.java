@@ -5,12 +5,17 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.realm.RealmObject;
 
@@ -206,6 +211,52 @@ public class HelperFunctions {
 
     public static <T extends Object> void printTask(String tag, T task) {
         theLogger("Task", tag + ": " + new Gson().toJson(task));
+    }
+
+
+    public static String upperCaseLetter(String str) {
+        StringBuffer capBuffer = new StringBuffer();
+        if (str.isEmpty() || str.equals("") || str == null) {
+            return " ";
+        }
+        Matcher capMatcher = Pattern.compile("([a-z])([a-z]*)", Pattern.CASE_INSENSITIVE).matcher(str);
+        while (capMatcher.find()) {
+            capMatcher.appendReplacement(capBuffer, capMatcher.group(1).toUpperCase() + capMatcher.group(2).toLowerCase());
+        }
+
+        return capMatcher.appendTail(capBuffer).toString();
+
+    }
+
+    public static String lowerCaseLetter(String str) {
+        if (!str.isEmpty()) {
+            return str.toLowerCase();
+
+        }
+        return str;
+    }
+
+
+
+    /**
+     * helper method for set array adapter for spinner
+     * @param context
+     * @param options
+     * @return
+     */
+    public static SpinnerAdapter setArrayAdapterHelperMethod(Context context, String[] options) {
+        ArrayAdapter arrayAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_item, options);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return arrayAdapter;
+    }
+
+    /**
+     * check that value of field is empty or null
+     * @param str
+     * @return
+     */
+    public static boolean isNullOrEmpty(String str) {
+        return str == null || str.length() == 0;
     }
 
 }
