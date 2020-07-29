@@ -33,8 +33,9 @@ public class CallerDialog implements View.OnClickListener {
         View setCallerDialog(View view);
     }
 
-    public CallerDialog(Context context) {
+    public CallerDialog(Context context, EventListener eventListener) {
         this.context = context;
+        this.listener = eventListener;
     }
 
     private CallerDialogModel getCallerDialogModel(String number) {
