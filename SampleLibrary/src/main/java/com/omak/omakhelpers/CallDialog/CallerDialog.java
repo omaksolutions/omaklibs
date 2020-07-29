@@ -164,5 +164,7 @@ public class CallerDialog implements View.OnClickListener {
         else if(viewId==R.id.tvViewCall) {
 
         }
+
+        alert.dismiss();
     }
 }
