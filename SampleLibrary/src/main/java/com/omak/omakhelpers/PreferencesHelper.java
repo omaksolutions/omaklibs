@@ -10,6 +10,10 @@ public class PreferencesHelper {
     private static String PREFS_NAME = "omaklib";
     Context context;
 
+    /**
+     *
+     * @param context
+     */
     public PreferencesHelper(Context context) {
         this.context = context;
     }
