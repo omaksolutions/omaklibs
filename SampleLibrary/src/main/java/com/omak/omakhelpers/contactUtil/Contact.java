@@ -1,6 +1,9 @@
 package com.omak.omakhelpers.contactUtil;
 
+import android.content.ContentProviderOperation;
+import android.content.Context;
 import android.database.Cursor;
+import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 
 import androidx.annotation.NonNull;
@@ -242,4 +245,5 @@ public class Contact {
         }
         return false;
     }
+
 }

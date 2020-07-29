@@ -1,5 +1,6 @@
 package com.omak.omakhelpers;
 
+import android.content.ContentProviderOperation;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,8 @@ import android.provider.ContactsContract;
 import android.widget.Toast;
 
 import com.omak.omakhelpers.contactUtil.ContactsHelper;
+
+import java.util.ArrayList;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -23,6 +26,110 @@ public class openIntentUtil {
         callIntent.setData(Uri.parse("tel:" + number));
         context.startActivity(callIntent);
     }
+
+
+    public static void addContact(Context context, String displayName, String mobileNumber, String homeNumber, String workNumber
+            , String emailID, String company, String jobTitle) {
+
+
+        ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+
+        ops.add(ContentProviderOperation.newInsert(
+                ContactsContract.RawContacts.CONTENT_URI)
+                .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
+                .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null)
+                .build()
+        );
+
+        //------------------------------------------------------ Names
+        if (displayName != null) {
+            ops.add(ContentProviderOperation.newInsert(
+                    ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                    .withValue(ContactsContract.Data.MIMETYPE,
+                            ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+                    .withValue(
+                            ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME,
+                            displayName).build()
+            );
+        }
+
+        //------------------------------------------------------ Mobile Number
+        if (mobileNumber != null) {
+            ops.add(ContentProviderOperation.
+                    newInsert(ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                    .withValue(ContactsContract.Data.MIMETYPE,
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                    .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, mobileNumber)
+                    .withValue(ContactsContract.CommonDataKinds.Phone.TYPE,
+                            ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
+                    .build()
+            );
+        }
+
+        //------------------------------------------------------ Home Numbers
+        if (homeNumber != null) {
+            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                    .withValue(ContactsContract.Data.MIMETYPE,
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                    .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, homeNumber)
+                    .withValue(ContactsContract.CommonDataKinds.Phone.TYPE,
+                            ContactsContract.CommonDataKinds.Phone.TYPE_HOME)
+                    .build());
+        }
+
+        //------------------------------------------------------ Work Numbers
+        if (workNumber != null) {
+            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                    .withValue(ContactsContract.Data.MIMETYPE,
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                    .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, workNumber)
+                    .withValue(ContactsContract.CommonDataKinds.Phone.TYPE,
+                            ContactsContract.CommonDataKinds.Phone.TYPE_WORK)
+                    .build());
+        }
+
+        //------------------------------------------------------ Email
+        if (emailID != null) {
+            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                    .withValue(ContactsContract.Data.MIMETYPE,
+                            ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)
+                    .withValue(ContactsContract.CommonDataKinds.Email.DATA, emailID)
+                    .withValue(ContactsContract.CommonDataKinds.Email.TYPE, ContactsContract.CommonDataKinds.Email.TYPE_WORK)
+                    .build());
+        }
+
+        //------------------------------------------------------ Organization
+        if (!company.equals("") && !jobTitle.equals("")) {
+            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                    .withValue(ContactsContract.Data.MIMETYPE,
+                            ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE)
+                    .withValue(ContactsContract.CommonDataKinds.Organization.COMPANY, company)
+                    .withValue(ContactsContract.CommonDataKinds.Organization.TYPE, ContactsContract.CommonDataKinds.Organization.TYPE_WORK)
+                    .withValue(ContactsContract.CommonDataKinds.Organization.TITLE, jobTitle)
+                    .withValue(ContactsContract.CommonDataKinds.Organization.TYPE, ContactsContract.CommonDataKinds.Organization.TYPE_WORK)
+                    .build());
+        }
+
+        // Asking the Contact provider to create a new contact
+        try {
+            context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+        } catch (Exception e) {
+            e.printStackTrace();
+            //  Toast.makeText(myContext, "Exception: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public static void addContact(Context context, String displayName, String mobileNumber) {
+        addContact(context, displayName, mobileNumber, "", "", "", "", "");
+    }
+
 
     // find the contact number exiting or not
     public static boolean contactExists(Context context, String number) {
