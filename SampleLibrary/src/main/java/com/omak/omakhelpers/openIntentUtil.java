@@ -1,13 +1,9 @@
 package com.omak.omakhelpers;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.ContactsContract;
-
-import androidx.core.app.ActivityCompat;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -58,7 +54,8 @@ public class openIntentUtil {
 
         return success;
     }
-// openSms app intent
+
+    // openSms app intent
     public static boolean openSmsApp(Context context, String number, String name) {
         Boolean success = false;
         Intent smsIntent = new Intent(Intent.ACTION_VIEW);
