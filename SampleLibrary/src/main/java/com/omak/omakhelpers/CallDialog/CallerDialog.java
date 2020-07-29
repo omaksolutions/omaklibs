@@ -33,6 +33,10 @@ public class CallerDialog implements View.OnClickListener {
         View setCallerDialog(View view);
     }
 
+    public CallerDialog(Context context) {
+        this.context = context;
+    }
+
     private CallerDialogModel getCallerDialogModel(String number) {
         callerDialogModel = new CallerDialogModel();
         callerDialogModel.setNumber(number);
@@ -56,7 +60,6 @@ public class CallerDialog implements View.OnClickListener {
 
     public void showDialog(String number) {
 
-        this.context = context;
         this.callNumber = number;
         CallerDialogModel callerDialogModel = getCallerDialogModel(number);
 
