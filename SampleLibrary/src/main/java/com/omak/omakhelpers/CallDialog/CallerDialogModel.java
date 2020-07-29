@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.omak.samplelibrary.R;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -48,7 +49,7 @@ public class CallerDialogModel extends RealmObject {
         number = "";
         status = "";
         isContactExists = false;
-        backgroundColor = Color.parseColor("#000000");
+        backgroundColor = R.color.colorPrimaryDark;
     }
 
     public Integer getBackgroundColor() {
