@@ -16,13 +16,11 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.omak.omakhelpers.HelperFunctions;
-import com.omak.omakhelpers.HelpersTest;
 import com.omak.omakhelpers.RealmHelpers.RealmHelpers;
 import com.omak.samplelibrary.R;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.EventListener;
 
 public class NotificationHandler {
     public static Bitmap largeImage, bigImage, smallIconImage;
@@ -30,14 +28,11 @@ public class NotificationHandler {
     Context context;
     RealmHelpers realmHelpers;
     int nextNotificationId;
-    notiData notiData;
-    private NotificationChannelHelpers mNotificationUtils;
+    com.omak.omakhelpers.firebaseNotification.notiData notiData;
     Class mainClass;
     EventListener listener;
-
-    public interface EventListener {
-        void onNotificationReceived(notiData notiData);
-    }
+    Integer notificationPriority = NotificationCompat.PRIORITY_DEFAULT;
+    private NotificationChannelHelpers mNotificationUtils;
 
     public NotificationHandler(Context context, Class clazz) {
         this.context = context;
@@ -50,10 +45,14 @@ public class NotificationHandler {
         this.listener = listener;
     }
 
-    public NotificationHandler(Context context, notiData notiData) {
+    public NotificationHandler(Context context, com.omak.omakhelpers.firebaseNotification.notiData notiData) {
         this.notiData = notiData;
         this.context = context;
         showGeneralNotification();
+    }
+
+    public void setPriority(Integer priority) {
+        notificationPriority = priority;
     }
 
     /**
@@ -84,6 +83,9 @@ public class NotificationHandler {
         String channelId = NotificationChannelHelpers.CHANNEL_ID_GENERAL;
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
+        // Listener to interact with notiData or do operations on it
+        notiData = listener.onNotificationReceived(notiData);
+
         try {
             URL largeImage = new URL(notiData.getLongImageUrl());
             URL bigImages = new URL(notiData.getSmallImageUrl());
@@ -103,16 +105,16 @@ public class NotificationHandler {
                         .setContentText(notiData.getMessage())
                         .setColor(Color.GREEN)
                         .setContentTitle(notiData.getTitle())
+                        .setOngoing(notiData.getOngoing())
                         .setSound(defaultSoundUri)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(notiData.getMessage()))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setAutoCancel(true);
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             notificationCompat.setColor(context.getResources().getColor(R.color.colorWhite));
         }
 
-        listener.onNotificationReceived(notiData);
 
         switch (notiData.getType()) {
             case "logout":
@@ -123,6 +125,8 @@ public class NotificationHandler {
 
         intent = new Intent(context, mainClass);
         intent.putExtra("goto", notiData.getGoTo());
+        intent.putExtra("type", notiData.getType());
+        intent.putExtra("notiData", new Gson().toJson(notiData));
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         notificationCompat.setContentIntent(pendingIntent).addAction(R.drawable.logo, "" + notiData.getBtn_title(), pendingIntent);
 
@@ -136,5 +140,9 @@ public class NotificationHandler {
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(nextNotificationId, notificationCompat.build());
         }
+    }
+
+    public interface EventListener {
+        com.omak.omakhelpers.firebaseNotification.notiData onNotificationReceived(com.omak.omakhelpers.firebaseNotification.notiData notiData);
     }
 }

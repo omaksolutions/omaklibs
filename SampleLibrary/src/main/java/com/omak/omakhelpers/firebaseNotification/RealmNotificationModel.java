@@ -37,6 +37,11 @@ public class RealmNotificationModel extends RealmObject {
     @Expose
     private String data;
 
+    /**
+     *
+     * @param context
+     * @param notiData
+     */
     public static void createAndInsert(Context context, final HashMap<String, String> notiData) {
         Realm realm = RealmHelpers.getRealm("messages", context);
         realm.executeTransaction(new Realm.Transaction() {
@@ -59,6 +64,11 @@ public class RealmNotificationModel extends RealmObject {
         });
     }
 
+    /**
+     *
+     * @param context
+     * @param notiData
+     */
     public static void createAndInsert(Context context, final notiData notiData) {
         Realm realm = RealmHelpers.getRealm("messages", context);
         realm.executeTransaction(new Realm.Transaction() {
@@ -75,20 +85,32 @@ public class RealmNotificationModel extends RealmObject {
                 realmNotificationModel.setTitle(notiData.getTitle());
                 realmNotificationModel.setMessage(notiData.getMessage());
                 realmNotificationModel.setType(notiData.getType());
-                realmNotificationModel.setData(notiData.getData());
+                realmNotificationModel.setData(notiData.getRemoteMessage().getData().toString());
                 realm.insertOrUpdate(realmNotificationModel); // using insert API
             }
         });
     }
 
+    /**
+     *
+     * @return
+     */
     public String getData() {
         return data;
     }
 
+    /**
+     *
+     * @param data
+     */
     public void setData(String data) {
         this.data = data;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getId() {
         return id;
     }

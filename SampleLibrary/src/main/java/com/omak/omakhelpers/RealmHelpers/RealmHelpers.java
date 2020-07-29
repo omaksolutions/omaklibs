@@ -7,6 +7,7 @@ import com.omak.omakhelpers.firebaseNotification.RealmNotificationModel;
 import com.omak.omakhelpers.firebaseNotification.notiData;
 
 import java.util.HashMap;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -105,36 +106,102 @@ public class RealmHelpers {
         return nextNotificationId;
     }
 
-    public <T extends RealmObject> RealmResults<T> getUniqueFieldValuesFromRealm(String field, Class<T> clazz) {
-        RealmQuery uniqueFieldQuery = anotherRealm.where(clazz).distinct(field);
+    public <T extends RealmObject> List<T> getNotifications(Class<T> tClass) {
+        return realm.where(tClass).findAll();
+    }
+
+    // RealmHelpers for the App using the library
+    public <T extends RealmObject> int getLatestId(String primaryKey, Class<T> tClass) {
+        Number currentIdNum = anotherRealm.where(RealmNotificationModel.class).max(primaryKey);
+        return (currentIdNum == null) ? 1 : currentIdNum.intValue();
+    }
+
+    public <T extends RealmObject> int getLatestId(Class<T> tClass) {
+        Number currentIdNum = anotherRealm.where(RealmNotificationModel.class).max("id");
+        return (currentIdNum == null) ? 1 : currentIdNum.intValue();
+    }
+
+
+    public <T extends RealmObject> T getSingleRowContains(String field, String value, Class<T> clazz) {
+        RealmQuery query = anotherRealm.where(clazz);
+        query.contains(field, value);
+        RealmResults<T> foundRows = query.findAll();
+        if (foundRows.size() > 0) {
+            return foundRows.get(0);
+        }
+
+        return null;
+    }
+
+    public <T extends RealmObject> RealmResults<T> getOption(Class<T> clazz, String type, String value) {
+        RealmQuery uniqueFieldQuery = anotherRealm.where(clazz);
+        uniqueFieldQuery.equalTo(type, value).findAll();
+        RealmResults<T> uniqueValueProjects = uniqueFieldQuery.findAll();
+        return uniqueValueProjects;
+    }
+
+    /*
+    param String field
+    param Class<T> tClass
+     */
+    public <T extends RealmObject> RealmResults<T> getUniqueFieldValuesFromRealm(String field, Class<T> tClass) {
+        RealmQuery uniqueFieldQuery = anotherRealm.where(tClass).distinct(field);
         uniqueFieldQuery.notEqualTo(field, "");
         RealmResults<T> uniqueValueProjects = uniqueFieldQuery.findAll();
         return uniqueValueProjects;
     }
 
-
-    public <T extends RealmObject> RealmResults<T> getFromRealm(String field, String value, Class<T> clazz) {
-        return anotherRealm.where(clazz).equalTo(field, value).findAll();
+    public <T extends RealmObject> RealmResults<T> getFromRealm(String field, String value, Class<T> tClass) {
+        return anotherRealm.where(tClass).equalTo(field, value).findAll();
     }
 
-    public <T extends RealmObject> RealmResults<T> getFromRealm(String field, Integer value, Class<T> clazz) {
-        return anotherRealm.where(clazz).equalTo(field, value).findAll();
+    public <T extends RealmObject> RealmResults<T> getFromRealm(String field, Integer value, Class<T> tClass) {
+        return anotherRealm.where(tClass).equalTo(field, value).findAll();
     }
 
-    public <T extends RealmObject> RealmResults<T> getFromRealm(Class<T> clazz) {
-        return anotherRealm.where(clazz).findAll();
+    /**
+     *
+     * @param tClass
+     * @param <T>
+     * @return
+     */
+    public <T extends RealmObject> RealmResults<T> getFromRealm(Class<T> tClass) {
+        return anotherRealm.where(tClass).findAll();
     }
 
-    public <T extends RealmObject> T getSingleFromRealm(String field, String value, Class<T> clazz) {
-        return anotherRealm.where(clazz).equalTo(field, value).findFirst();
+    /**
+     *
+     * @param field
+     * @param value
+     * @param tClass
+     * @param <T>
+     * @return
+     */
+    public <T extends RealmObject> T getSingleFromRealm(String field, String value, Class<T> tClass) {
+        return anotherRealm.where(tClass).equalTo(field, value).findFirst();
     }
 
-    public <T extends RealmObject> T getSingleFromRealm(String field, Integer value, Class<T> clazz) {
-        return anotherRealm.where(clazz).equalTo(field, value).findFirst();
+    /**
+     *
+     * @param field
+     * @param value
+     * @param tClass
+     * @param <T>
+     * @return
+     */
+    public <T extends RealmObject> T getSingleFromRealm(String field, Integer value, Class<T> tClass) {
+        return anotherRealm.where(tClass).equalTo(field, value).findFirst();
     }
 
-    public <T extends RealmObject> void deleteFromRealm(String field, Integer value, Class<T> clazz) {
-        final RealmResults<T> foundRows = anotherRealm.where(clazz).equalTo(field, value).findAll();
+    /**
+     *
+     * @param field
+     * @param value
+     * @param tClass
+     * @param <T>
+     */
+    public <T extends RealmObject> void deleteFromRealm(String field, Integer value, Class<T> tClass) {
+        final RealmResults<T> foundRows = anotherRealm.where(tClass).equalTo(field, value).findAll();
         anotherRealm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -147,8 +214,34 @@ public class RealmHelpers {
         });
     }
 
-    public <T extends RealmObject> void deleteFromRealm(String field, String value, Class<T> clazz) {
-        final RealmResults<T> foundRows = anotherRealm.where(clazz).equalTo(field, value).findAll();
+    /**
+     *
+     * @param field
+     * @param value
+     * @param tClass
+     * @param <T>
+     */
+    public <T extends RealmObject> void deleteFromRealm(String field, String value, Class<T> tClass) {
+        final RealmResults<T> foundRows = anotherRealm.where(tClass).equalTo(field, value).findAll();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                try {
+                    foundRows.deleteAllFromRealm();
+                } catch (RealmPrimaryKeyConstraintException e) {
+                    HelperFunctions.toaster(context, "Local DB Failure!");
+                }
+            }
+        });
+    }
+
+    /**
+     *
+     * @param tClass
+     * @param <T>
+     */
+    public <T extends RealmObject> void deleteFromRealm(Class<T> tClass) {
+        final RealmResults<T> foundRows = anotherRealm.where(tClass).findAll();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {

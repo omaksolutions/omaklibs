@@ -3,15 +3,15 @@ package com.omak.omakhelpers.firebaseNotification;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 
-public class notiData {
+import java.io.Serializable;
 
-    String data;
+public class notiData implements Serializable {
+
+    RemoteMessage remoteMessage;
     String type;
     String title;
     String message;
-
     String btn_title = "View Now";
-
     String longImageUrl;
     String smallImageUrl;
     String smallIconUrl;
@@ -19,9 +19,8 @@ public class notiData {
     Boolean showNotification;
     String goTo;
     String channelId;
-
     public notiData(RemoteMessage remoteMessage) {
-        data = new Gson().toJson(remoteMessage.getData());
+        this.remoteMessage = remoteMessage;
         type = getDataKey(remoteMessage, "type");
         title = getDataKey(remoteMessage, "title");
         message = getDataKey(remoteMessage, "message");
@@ -36,6 +35,18 @@ public class notiData {
         if (channelId.isEmpty()) channelId = "channel_id_general";
     }
 
+    public static notiData getFromIntent(String jsonString) {
+        return new Gson().fromJson(jsonString, notiData.class);
+    }
+
+    public RemoteMessage getRemoteMessage() {
+        return remoteMessage;
+    }
+
+    public void setRemoteMessage(RemoteMessage remoteMessage) {
+        this.remoteMessage = remoteMessage;
+    }
+
     public Boolean getOngoing() {
         return ongoing;
     }
@@ -44,16 +55,12 @@ public class notiData {
         this.ongoing = ongoing;
     }
 
-    private String getDataKey(RemoteMessage remoteMessage, String key) {
+    public String getDataKey(RemoteMessage remoteMessage, String key) {
         return (remoteMessage.getData().get(key) != null) ? remoteMessage.getData().get(key) : "";
     }
 
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
+    public String getDataKey(String key) {
+        return (remoteMessage.getData().get(key) != null) ? remoteMessage.getData().get(key) : "";
     }
 
     public String getType() {
@@ -135,5 +142,6 @@ public class notiData {
     public void setChannelId(String channelId) {
         this.channelId = channelId;
     }
+
 
 }
