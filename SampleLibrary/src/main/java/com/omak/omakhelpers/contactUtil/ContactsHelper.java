@@ -11,8 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.omak.readmin.aallHelpers.Alerts;
-
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
 
 public class ContactsHelper {
@@ -38,7 +36,7 @@ public class ContactsHelper {
         Cursor cursor = new ContactsCursorLoader(context, phoneNumber, null).loadInBackground();
         // if cursor null, there is no contact, return only with number
         if (cursor == null) return new Contact(null, phoneNumber, null);
-        Alerts.log("is", "Contacts");
+
         // there is a match, return the first one
         cursor.moveToFirst();
         return new Contact(cursor);
