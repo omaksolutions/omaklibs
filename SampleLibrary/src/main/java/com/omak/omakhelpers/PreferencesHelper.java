@@ -51,8 +51,6 @@ public class PreferencesHelper {
 
     public static void commitAndClear(SharedPreferences.Editor editor) {
         editor.commit();
-        editor.clear();
-
     }
 
 }
