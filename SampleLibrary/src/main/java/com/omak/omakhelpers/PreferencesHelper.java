@@ -8,8 +8,13 @@ import static android.content.Context.MODE_PRIVATE;
 public class PreferencesHelper {
     public static SharedPreferences preferences;
     private static String PREFS_NAME = "omaklib";
+    Context context;
 
-    public PreferencesHelper(Context context, String pref_name) {
+    public PreferencesHelper(Context context) {
+        this.context = context;
+    }
+
+    public void setPrefName(String pref_name) {
         PREFS_NAME = pref_name;
         preferences = context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
     }
