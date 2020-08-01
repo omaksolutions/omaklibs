@@ -52,7 +52,7 @@ public class HelperRemoteConfig {
         this.APP_VERSION = APP_VERSION;
     }
 
-    private void checkUpdate() {
+    public void checkUpdate() {
         // in activity or fragment, according to your fetching strategy
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
@@ -105,6 +105,7 @@ public class HelperRemoteConfig {
             builder.setNegativeButton("Udpate", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    listener.onUpdateAvailable("");
                     dialog.dismiss();
                 }
             });
