@@ -20,6 +20,15 @@ public class HelperRemoteConfig {
     String imgUrl = "";
     Context context;
     String APP_VERSION = "0.0.0";
+
+    public EventListener getListener() {
+        return listener;
+    }
+
+    public void setListener(EventListener listener) {
+        this.listener = listener;
+    }
+
     EventListener listener;
     Integer defaultConfig;
 
@@ -52,7 +61,9 @@ public class HelperRemoteConfig {
         this.APP_VERSION = APP_VERSION;
     }
 
-    public void checkUpdate() {
+    public void checkUpdate(EventListener listener) {
+        this.listener = listener;
+
         // in activity or fragment, according to your fetching strategy
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
