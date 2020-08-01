@@ -75,17 +75,6 @@ public class HelperRemoteConfig {
         mFirebaseRemoteConfig.activateFetched();
 
         checkRemote();
-
-        mFirebaseRemoteConfig.fetch().addOnCompleteListener((Activity) context, new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    HelperFunctions.toaster(context, "Fetch succeeded.");
-                } else {
-                    HelperFunctions.toaster(context, "Fetch failed.");
-                }
-            }
-        });
     }
 
     private void checkRemote() {
@@ -113,7 +102,7 @@ public class HelperRemoteConfig {
             });
 
             // Set the negative button
-            builder.setNegativeButton("Udpate", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     listener.onUpdateAvailable("");
@@ -123,6 +112,18 @@ public class HelperRemoteConfig {
 
             AlertDialog dialog = builder.create();
             dialog.show();
+        }
+        else {
+            mFirebaseRemoteConfig.fetch().addOnCompleteListener((Activity) context, new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        HelperFunctions.toaster(context, "Fetch succeeded.");
+                    } else {
+                        HelperFunctions.toaster(context, "Fetch failed.");
+                    }
+                }
+            });
         }
     }
 
