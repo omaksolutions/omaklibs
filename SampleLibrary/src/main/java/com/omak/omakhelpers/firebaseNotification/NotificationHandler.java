@@ -32,6 +32,7 @@ public class NotificationHandler {
     Class mainClass;
     EventListener listener;
     Integer notificationPriority = NotificationCompat.PRIORITY_DEFAULT;
+    Integer notiLogo = R.drawable.logo;
     private NotificationChannelHelpers mNotificationUtils;
 
     public NotificationHandler(Context context, Class clazz) {
@@ -49,6 +50,14 @@ public class NotificationHandler {
         this.notiData = notiData;
         this.context = context;
         showGeneralNotification();
+    }
+
+    public Integer getNotiLogo() {
+        return notiLogo;
+    }
+
+    public void setNotiLogo(Integer notiLogo) {
+        this.notiLogo = notiLogo;
     }
 
     public void setPriority(Integer priority) {
@@ -128,7 +137,7 @@ public class NotificationHandler {
         intent.putExtra("type", notiData.getType());
         intent.putExtra("notiData", new Gson().toJson(notiData));
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        notificationCompat.setContentIntent(pendingIntent).addAction(R.drawable.logo, "" + notiData.getBtn_title(), pendingIntent);
+        notificationCompat.setContentIntent(pendingIntent).addAction(notiLogo, "" + notiData.getBtn_title(), pendingIntent);
 
         // Since android Oreo notification channel is needed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
