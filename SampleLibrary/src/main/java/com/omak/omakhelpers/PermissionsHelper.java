@@ -17,10 +17,13 @@ public class PermissionsHelper {
     private Activity activity;
     private String[] permissions;
 
-    public PermissionsHelper(Activity activity, String[] permissions, EventListener listener) {
+    public PermissionsHelper(Activity activity, String[] permissions) {
         this.activity = activity;
-        this.listener = listener;
         this.permissions = permissions;
+    }
+
+    public void setEventListener(EventListener listener) {
+        this.listener = listener;
     }
 
     public String[] getRequiredPermissionsArray() {
@@ -42,6 +45,7 @@ public class PermissionsHelper {
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
         HelperFunctions.theLogger("Permission", "" +  new Gson().toJson(permissions));
         HelperFunctions.theLogger("grantResults", "" + new Gson().toJson(grantResults));
 
@@ -59,11 +63,16 @@ public class PermissionsHelper {
             }
         }
 
+        // Bolt out and Toast a message that listener is not initialized.
+        if(listener==null) {
+            HelperFunctions.toaster(activity, "Please implement listener with setEventListener method.");
+            return;
+        }
+
         listener.onPermissionsGranted(grantedPermissions, totalPermissions, permissionNotGranted);
     }
 
     public interface EventListener {
         void onPermissionsGranted(Integer grantedPermissions, Integer totalPermissions, ArrayList<String> permissionNotGranted);
-        void onPermissionsGrantedSingle(Integer grantedPermissions, String permission);
     }
 }
