@@ -97,6 +97,7 @@ public class PermissionsHelper {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 listener.onDialogProceed();
+                dialog.dismiss();
             }
         });
         // Set the negative button
