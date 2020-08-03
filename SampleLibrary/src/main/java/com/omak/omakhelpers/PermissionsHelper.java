@@ -6,6 +6,8 @@ import android.os.Build;
 
 import androidx.core.app.ActivityCompat;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 
 public class PermissionsHelper {
@@ -40,8 +42,8 @@ public class PermissionsHelper {
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        HelperFunctions.theLogger("Permission", "" + permissions);
-        HelperFunctions.theLogger("grantResults", "" + grantResults);
+        HelperFunctions.theLogger("Permission", "" +  new Gson().toJson(permissions));
+        HelperFunctions.theLogger("grantResults", "" + new Gson().toJson(grantResults));
 
         Integer totalPermissions = permissions.length;
         Integer grantedPermissions = 0;
@@ -56,19 +58,12 @@ public class PermissionsHelper {
                 }
             }
         }
-        switch (requestCode) {
-            case 1:
-                listener.onPermissionsGranted(grantedPermissions, totalPermissions, permissionNotGranted);
-                break;
-            case 2:
-                listener.onPermissionsGrantedSingle(permissions[0]);
-                break;
-        }
 
+        listener.onPermissionsGranted(grantedPermissions, totalPermissions, permissionNotGranted);
     }
 
     public interface EventListener {
         void onPermissionsGranted(Integer grantedPermissions, Integer totalPermissions, ArrayList<String> permissionNotGranted);
-        void onPermissionsGrantedSingle(String permission);
+        void onPermissionsGrantedSingle(Integer grantedPermissions, String permission);
     }
 }
