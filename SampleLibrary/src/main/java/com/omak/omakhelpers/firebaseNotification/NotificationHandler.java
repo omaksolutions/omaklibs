@@ -110,7 +110,7 @@ public class NotificationHandler {
         NotificationCompat.Builder notificationCompat =
                 new NotificationCompat.Builder(context, channelId)
                         .setLargeIcon(largeImage)
-                        .setSmallIcon(R.drawable.logo)
+                        .setSmallIcon(notiLogo)
                         .setContentText(notiData.getMessage())
                         .setColor(Color.GREEN)
                         .setContentTitle(notiData.getTitle())
