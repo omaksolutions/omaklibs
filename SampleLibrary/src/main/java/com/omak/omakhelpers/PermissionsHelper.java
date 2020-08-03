@@ -1,12 +1,18 @@
 package com.omak.omakhelpers;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 
 import androidx.core.app.ActivityCompat;
 
 import com.google.gson.Gson;
+import com.omak.samplelibrary.R;
 
 import java.util.ArrayList;
 
@@ -16,6 +22,10 @@ public class PermissionsHelper {
     public EventListener listener;
     private Activity activity;
     private String[] permissions;
+    public String[] stringList = {
+            "Permissions Required",
+            "You have denied some of the required permissions for this action. Please open settings, go to permissions and grant permissions."
+    };
 
     public PermissionsHelper(Activity activity, String[] permissions) {
         this.activity = activity;
@@ -72,7 +82,36 @@ public class PermissionsHelper {
         listener.onPermissionsGranted(grantedPermissions, totalPermissions, permissionNotGranted);
     }
 
+    public void showDialog(String[] stringList) {
+        if(stringList==null) {
+            stringList = this.stringList;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(stringList[0]);
+        builder.setIcon(R.mipmap.ic_launcher);
+        builder.setMessage(stringList[1]);
+
+        // Set the positive button
+        builder.setPositiveButton(R.string.proceed, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                listener.onDialogProceed();
+            }
+        });
+        // Set the negative button
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     public interface EventListener {
         void onPermissionsGranted(Integer grantedPermissions, Integer totalPermissions, ArrayList<String> permissionNotGranted);
+        void onDialogProceed();
     }
 }
