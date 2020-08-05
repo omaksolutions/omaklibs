@@ -20,8 +20,8 @@ public abstract class DateHelpers {
      * @param time
      * @return
      */
-    public static String convertUnix2Date(Long time) {
-        return DateFormat.format("dd-MM-yyyy hh:mm:ss", time).toString();
+    public static Date convertUnix2Date(Long time) {
+        return new Date(time);
     }
 
     /**
