@@ -21,6 +21,30 @@ public class ContactsHelper {
     public static final Contact ERROR = new Contact("Error", "", null);
 
     /**
+     * find the contact number exiting or not
+     * @param context
+     * @param number
+     * @return
+     */
+    public static boolean contactExists(Context context, String number) {
+        /// number is the phone number
+        Uri lookupUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
+        String[] mPhoneNumberProjection = {ContactsContract.PhoneLookup._ID, ContactsContract.PhoneLookup.NUMBER,
+                ContactsContract.PhoneLookup.DISPLAY_NAME};
+        Cursor cur = context.getContentResolver().query(lookupUri, mPhoneNumberProjection,
+                null, null, null);
+        try {
+            if (cur.moveToFirst()) {
+                return true;
+            }
+        } finally {
+            if (cur != null)
+                cur.close();
+        }
+        return false;
+    }
+
+    /**
      * Returns a contact by a given phone number
      *
      * @param context
