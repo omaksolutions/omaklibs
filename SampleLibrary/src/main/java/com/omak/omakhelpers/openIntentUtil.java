@@ -27,7 +27,6 @@ public class openIntentUtil {
         context.startActivity(callIntent);
     }
 
-
     public static void addContact(Context context, String displayName, String mobileNumber, String homeNumber, String workNumber
             , String emailID, String company, String jobTitle) {
 
