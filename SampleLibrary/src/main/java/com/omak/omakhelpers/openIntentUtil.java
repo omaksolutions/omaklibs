@@ -1,9 +1,11 @@
 package com.omak.omakhelpers;
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentProviderOperation;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -17,6 +19,40 @@ import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class openIntentUtil {
+
+    public void openTwitter(Context context, String url) {
+        Uri uri = Uri.parse(url)
+                ;
+        Intent likeIng = new Intent(Intent.ACTION_VIEW, uri);
+        likeIng.setPackage("com.twitter.android");
+
+        try {
+            context.startActivity(likeIng);
+        } catch (ActivityNotFoundException e) {
+            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/thesisexperts")));
+        }
+    }
+
+    public void openFacebook(Context context, String url) {
+        Intent facebookIntent = new Intent(Intent.ACTION_VIEW);
+        facebookIntent.setData(Uri.parse(getFacebookPageURL(context, url)));
+        context.startActivity(facebookIntent);
+    }
+
+    public String getFacebookPageURL(Context context, String url) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            int versionCode = packageManager.getPackageInfo("com.facebook.katana", 0).versionCode;
+            if (versionCode >= 3002850) { //newer versions of fb app
+                return "fb://facewebmodal/f?href=" + url;
+            } else { //older versions of fb app
+                return "fb://page/" + url;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            return url; //normal web url
+        }
+    }
+
 
     //open Dialer
     public static void openDialer(Context context, String number) {
@@ -209,7 +245,28 @@ public class openIntentUtil {
             success = true;
         } catch (Exception e) {
             HelperFunctions.toaster(context, "Message failed: " + e.getMessage());
-            //Toast.makeText(context, "Message failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        return success;
+    }
+
+    // open whatsApp intent
+    public static boolean openWhatsappWithText(Context context, String number, String text) {
+        Boolean success = false;
+        try {
+            String bodyMessageFormal = "Hello";
+            bodyMessageFormal += (text.isEmpty()) ? "" : " " + text;
+            bodyMessageFormal += ", \n\n"; // Replace with your message.
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.putExtra(Intent.EXTRA_TEXT, "");
+            intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+            intent.setType("text/rtf");
+            intent.setData(Uri.parse("https://wa.me/" + number + "/?text=" + bodyMessageFormal));
+            context.startActivity(intent);
+            success = true;
+        } catch (Exception e) {
+            HelperFunctions.toaster(context, "Message failed: " + e.getMessage());
         }
 
         return success;
