@@ -254,15 +254,11 @@ public class openIntentUtil {
     public static boolean openWhatsappWithText(Context context, String number, String text) {
         Boolean success = false;
         try {
-            String bodyMessageFormal = "Hello";
-            bodyMessageFormal += (text.isEmpty()) ? "" : " " + text;
-            bodyMessageFormal += ", \n\n"; // Replace with your message.
-
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.putExtra(Intent.EXTRA_TEXT, "");
             intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
             intent.setType("text/rtf");
-            intent.setData(Uri.parse("https://wa.me/" + number + "/?text=" + bodyMessageFormal));
+            intent.setData(Uri.parse("https://wa.me/" + number + "/?text=" + text));
             context.startActivity(intent);
             success = true;
         } catch (Exception e) {
