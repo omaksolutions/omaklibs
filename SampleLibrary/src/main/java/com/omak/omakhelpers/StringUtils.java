@@ -7,6 +7,7 @@ public abstract class StringUtils {
 
     public static String getTitleFromLabel(String string) {
         string = string.replace("-", " ");
+        string = string.replace("_", " ");
         //string = capitalize(string);
         return string;
     }
