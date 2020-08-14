@@ -70,8 +70,6 @@ public class NotificationHandler {
      * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        HelperFunctions.theLogger("Check Notification", "" + new Gson().toJson(remoteMessage));
-
         notiData = new notiData(remoteMessage);
         showGeneralNotification();
     }
