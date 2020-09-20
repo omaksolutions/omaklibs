@@ -55,6 +55,12 @@ public class PreferencesHelper {
         return preferences.getString(key, defaultValue);
     }
 
+    public static setPreference(String Key, String value) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Key, value);
+        commitAndClear(editor);
+    }
+
     public static void setPreference(Context context, String Key, String value) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Key, value);
