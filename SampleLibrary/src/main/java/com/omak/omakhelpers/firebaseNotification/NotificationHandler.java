@@ -133,7 +133,7 @@ public class NotificationHandler {
         intent = new Intent(context, mainClass);
         intent.putExtra("goto", notiData.getGoTo());
         intent.putExtra("type", notiData.getType());
-        intent.putExtra("notiData", new Gson().toJson(notiData));
+        intent.putExtra("notiData", notiData);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         notificationCompat.setContentIntent(pendingIntent).addAction(notiLogo, "" + notiData.getBtn_title(), pendingIntent);
 
