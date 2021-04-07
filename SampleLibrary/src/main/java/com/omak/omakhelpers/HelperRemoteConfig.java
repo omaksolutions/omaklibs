@@ -72,7 +72,7 @@ public class HelperRemoteConfig {
 
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         mFirebaseRemoteConfig.setDefaultsAsync(defaultConfig);
-        mFirebaseRemoteConfig.activateFetched();
+        mFirebaseRemoteConfig.fetchAndActivate();
 
         checkRemote();
     }
@@ -117,11 +117,7 @@ public class HelperRemoteConfig {
             mFirebaseRemoteConfig.fetch().addOnCompleteListener((Activity) context, new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        HelperFunctions.toaster(context, "Fetch succeeded.");
-                    } else {
-                        HelperFunctions.toaster(context, "Fetch failed.");
-                    }
+                    listener.onCompleteListener(task.isSuccessful(), mFirebaseRemoteConfig);
                 }
             });
         }
@@ -129,6 +125,7 @@ public class HelperRemoteConfig {
 
     public interface EventListener {
         void onUpdateAvailable(String newVersion);
+        void onCompleteListener(Boolean completed, FirebaseRemoteConfig mFirebaseRemoteConfig);
     }
 
 
