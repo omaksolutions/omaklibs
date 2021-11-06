@@ -72,7 +72,7 @@ public class HelperRemoteConfig {
 
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         mFirebaseRemoteConfig.setDefaultsAsync(defaultConfig);
-        mFirebaseRemoteConfig.activateFetched();
+        mFirebaseRemoteConfig.activate();
 
         checkRemote();
     }
