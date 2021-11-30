@@ -133,6 +133,8 @@ public class NotificationHandler {
         intent = new Intent(context, mainClass);
         intent.putExtra("goto", notiData.getGoTo());
         intent.putExtra("type", notiData.getType());
+        intent.putExtra("post_id", notiData.getProject_id());
+        intent.putExtra("project_id", notiData.getPost_id());
         notiData.setRemoteMessage(null);
         intent.putExtra("notiData", notiData);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
