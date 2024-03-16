@@ -19,6 +19,9 @@ public class notiData implements Serializable {
     Boolean showNotification;
     String goTo;
     String channelId;
+    String post_id;
+    String project_id;
+
     public notiData(RemoteMessage remoteMessage) {
         this.remoteMessage = remoteMessage;
         type = getDataKey(remoteMessage, "type");
@@ -31,12 +34,31 @@ public class notiData implements Serializable {
         showNotification = getDataKey(remoteMessage, "remoteShowNotification") != "false";
         goTo = getDataKey(remoteMessage, "goto");
         channelId = getDataKey(remoteMessage, "channel_id");
+        post_id = getDataKey(remoteMessage, "post_id");
+        project_id = getDataKey(remoteMessage, "project_id");
+
 
         if (channelId.isEmpty()) channelId = "channel_id_general";
     }
 
     public static notiData getFromIntent(String jsonString) {
         return new Gson().fromJson(jsonString, notiData.class);
+    }
+
+    public String getPost_id() {
+        return post_id;
+    }
+
+    public void setPost_id(String post_id) {
+        this.post_id = post_id;
+    }
+
+    public String getProject_id() {
+        return project_id;
+    }
+
+    public void setProject_id(String project_id) {
+        this.project_id = project_id;
     }
 
     public RemoteMessage getRemoteMessage() {
