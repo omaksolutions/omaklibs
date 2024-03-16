@@ -135,7 +135,13 @@ public class NotificationHandler {
         intent.putExtra("type", notiData.getType());
         notiData.setRemoteMessage(null);
         intent.putExtra("notiData", notiData);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        int intentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            intentFlags |= PendingIntent.FLAG_IMMUTABLE; // Add FLAG_IMMUTABLE for Android 12 and above
+        }
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, intentFlags);
+
         notificationCompat.setContentIntent(pendingIntent).addAction(notiLogo, "" + notiData.getBtn_title(), pendingIntent);
 
         // Since android Oreo notification channel is needed.
